@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name='xy-libcollection',
-    version='0.0.4',
+    version='0.0.5',
     author='xueyan',
     author_email='xueyan0407@outlook.com',
     description="xueyan's collection libs",
