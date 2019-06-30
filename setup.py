@@ -1,7 +1,7 @@
 import setuptools
 
 
-setuptools. setup(
+setuptools.setup(
     name='xy-libcollection',
     version='0.0.4',
     author='xueyan',
