@@ -79,6 +79,8 @@ class LinkedListKVstore(object):
         >>> len(link)
         3
         >>> del link['b']
+        >>> 'b' in link
+        False
         >>> len(link)
         2
         """
