@@ -87,6 +87,7 @@ class LinkedListKVstore(object):
             if h.next.k == k:
                 h.next = h.next.next
                 self.length -= 1
+                return
             h = h.next
 
     def __repr__(self):
@@ -96,15 +97,10 @@ class LinkedListKVstore(object):
         >>> link['b'] = 2
         >>> link['c'] = 3
         >>> link
-        Node('c', 3) --> Node('b', 2) --> Node('a', 1)
+        {'c': 3, 'b': 2, 'a': 1}
         """
-        lst = []
-        h = self.head.next
-        while h:
-            if h is not None:
-                lst.append(h)
-            h = h.next
-        return ' --> '.join(repr(n) for n in lst)
+        k_v = ['{}: {}'.format(repr(k), v) for k, v in self]
+        return '{' + ', '.join(k_v) + '}'
 
     def __iter__(self):
         """
@@ -112,16 +108,15 @@ class LinkedListKVstore(object):
         >>> link['a'] = 1
         >>> link['b'] = 2
         >>> link['c'] = 3
-        >>> for n in link:
-        ...     print(n)
-        Node('c', 3)
-        Node('b', 2)
-        Node('a', 1)
+        >>> for k, v in link:
+        ...     print(k, v)
+        c 3
+        b 2
+        a 1
         """
         h = self.head.next
         while h:
-            if h is not None:
-                yield h
+            yield h.k, h.v
             h = h.next
 
     def __contains__(self, k):
