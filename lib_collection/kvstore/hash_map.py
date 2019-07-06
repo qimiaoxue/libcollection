@@ -3,10 +3,12 @@ from linked_list import LinkedListKVstore
 
 class HashMap(object):
 
-    def __init__(self):
+    _item_count_per_bucket = 10
+
+    def __init__(self, bucket_count=3):
         self.length = 0
-        self.bucket_count = 3
-        self.arr = [LinkedListKVstore() for i in range(self.bucket_count)]
+        self.bucket_count = bucket_count 
+        self.arr = [LinkedListKVstore() for _ in range(self.bucket_count)]
 
     def __len__(self):
         return self.length
@@ -40,21 +42,27 @@ class HashMap(object):
         """
         >>> h = HashMap()
         >>> h['a'] = 1
-        >>> h['b'] = 2
-        >>> len(h)
-        2
-        >>> h['c'] = 3
-        >>> len(h)
-        3
-        >>> h['a'] = 100
-        >>> h['a']
-        100
+        >>> for i in range(40):
+        ...     h[str(i)] = i
+        ...
+        >>> h.bucket_count
+        7
         """
-        h = self._hash(k)
-        bucket = self.arr[h]
-        if k not in bucket:
-            self.length += 1
-        bucket[k] = v
+        if self.bucket_count * self._item_count_per_bucket <= self.length:
+            new_bucket_count = self.bucket_count * 2 + 1
+            new_hash_map = HashMap(new_bucket_count) 
+            new_hash_map[k] = v
+            for _k, _v in self:
+                new_hash_map[_k] = _v
+            self.length = new_hash_map.length
+            self.bucket_count = new_hash_map.bucket_count
+            self.arr = new_hash_map.arr
+        else:
+            h = self._hash(k)
+            bucket = self.arr[h]
+            if k not in bucket:
+                self.length += 1
+            bucket[k] = v
 
     def __getitem__(self, k):
         """
@@ -85,11 +93,33 @@ class HashMap(object):
         True
         >>> len(h)
         1
+        >>> for i in range(40):
+        ...     h[str(i)] = i
+        ...
+        >>> h.bucket_count
+        7
+        >>> for i in range(40):
+        ...     del h[str(i)]
+        ...
+        >>> h.bucket_count
+        3
         """
-        h = self._hash(k)
-        bucket = self.arr[h]
-        del bucket[k]
-        self.length -= 1
+        if self.bucket_count > 3 and self.length <= int(self.bucket_count / 2):
+            new_bucket_count = int((self.bucket_count - 1) / 2)
+            new_hash_map = HashMap(new_bucket_count)
+            for _k, _v in self:
+                if _k == k:
+                    continue
+                new_hash_map[_k] = _v
+            self.length = new_hash_map.length
+            self.bucket_count = new_hash_map.bucket_count
+            self.arr = new_hash_map.arr
+        else:
+            h = self._hash(k)
+            bucket = self.arr[h]
+            if k in bucket:
+                del bucket[k]
+                self.length -= 1
 
     def __iter__(self):
         """
@@ -104,7 +134,7 @@ class HashMap(object):
         b 2
         """
         for bucket in self.arr:
-            for k,v in bucket:
+            for k, v in bucket:
                 yield k, v 
 
     def __repr__(self):
