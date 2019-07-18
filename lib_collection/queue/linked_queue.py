@@ -112,14 +112,13 @@ class LinkedQueue(object):
     def top(self):
         """
         >>> q = LinkedQueue()
+        >>> q.enqueue('a')
         >>> q.top
-        Traceback (most recent call last):
-            ...
-        IndexError: top from empty queue
-
+        'a'
         """
         if len(self) == 0:
             raise IndexError('top from empty queue')
+        return self.head.v
 
 
 if __name__ == '__main__':
