@@ -1,11 +1,29 @@
 class ArrayQueue(object):
 
-    def __init__(self, lst=None):
+    def __init__(self, lst=None, capacity=4):
+        """
+        >>> q = ArrayQueue(['a', 'b', 'c'])
+        >>> q.n
+        3
+        >>> q.head
+        0
+        >>> q.tail
+        3
+        """
         self.n = 0
-        self.capacity = 4
+        self.capacity = capacity 
         self.lst = [None] * self.capacity
         self.head = 0
         self.tail = 0
+
+        if lst:
+            q = ArrayQueue(capacity=capacity)
+            for i in lst:
+                q.enqueue(i)
+            self.lst = q.lst
+            self.n = q.n
+            self.head = q.head
+            self.tail = q.tail
     
     def __len__(self):
         """
@@ -15,7 +33,7 @@ class ArrayQueue(object):
         >>> q.enqueue('c')
         >>> q.enqueue('d')
         >>> q.tail
-        4
+        0
         >>> q.dequeue()
         'a'
         >>> q.dequeue()
@@ -31,9 +49,7 @@ class ArrayQueue(object):
         >>> len(q)
         3
         """
-        if self.tail < self.head:
-            return self.tail + self.capacity - self.head
-        return self.tail - self.head
+        return self.n
 
     def __repr__(self):
         """
@@ -81,10 +97,8 @@ class ArrayQueue(object):
         n = self.head
         for _ in range(len(self)):
             yield self.lst[n]
-            n += 1
-            if n == self.capacity:
-                n = n % self.capacity
-
+            n = (n + 1) % self.capacity
+            
     def __contains__(self, i):
         """
         >>> q = ArrayQueue()
@@ -106,7 +120,10 @@ class ArrayQueue(object):
         >>> q.enqueue('b')
         >>> q.enqueue('c')
         >>> q.enqueue('d')
-        >>> q.enqueue('f')
+        >>> q.enqueue('e')
+        Traceback (most recent call last):
+            ...
+        IndexError: queue overflow
         >>> q.dequeue()
         'a'
         >>> q.dequeue()
@@ -114,11 +131,11 @@ class ArrayQueue(object):
         >>> len(q)
         2
         """
-        if len(self) < self.capacity:
-            if self.tail == self.capacity:
-                self.tail = self.tail % self.capacity
-            self.lst[self.tail] = i
-            self.tail += 1
+        if len(self) == self.capacity:
+            raise IndexError ('queue overflow')
+        self.lst[self.tail] = i
+        self.tail = (self.tail + 1) % self.capacity 
+        self.n += 1
 
     def dequeue(self):
         """
@@ -145,10 +162,9 @@ class ArrayQueue(object):
         """
         if len(self) == 0:
             raise IndexError('dequeue from empty queue')
-        if self.head == self.capacity:
-            self.head = self.head % self.capacity
         res = self.lst[self.head]
-        self.head += 1
+        self.head = (self.head + 1) % self.capacity
+        self.n -= 1
         return res
 
     @property
