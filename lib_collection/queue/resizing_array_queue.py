@@ -114,6 +114,8 @@ class ResizingArrayQueue(object):
         1
         >>> q.capacity
         3
+        >>> q.lst
+        ['f', None, None]
         """
         if self.n == 0:
             raise IndexError('queue underflow')
