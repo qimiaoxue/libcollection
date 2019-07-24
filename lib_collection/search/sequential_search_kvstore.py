@@ -94,7 +94,7 @@ class SequentialSearchKVStore(object):
         """
         n = self._get_node(k)
         if n:
-            n.value = value
+            n.value = v
         node = KVNode(k, v)
         node.next = self.head.next
         self.head.next = node
