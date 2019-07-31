@@ -9,14 +9,14 @@ def sort(lst):
     if n <= 1:
         return
 
-    mi = n / 2
+    mi = n // 2
     left = lst[:mi]
     right = lst[mi:]
     sort(left)
     sort(right)
     
     i = j = k = 0
-    while i < len(lst) and j < len(right):
+    while i < len(left) and j < len(right):
         if left[i] < right[j]:
             lst[k] = left[i]
             i += 1
@@ -35,3 +35,7 @@ def sort(lst):
         j += 1
         k += 1
 
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
